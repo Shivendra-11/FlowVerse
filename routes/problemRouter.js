@@ -1,13 +1,16 @@
-const express=require("express");
-const Problem=require("../models/problem");
+import express from "express";
+import Problem from "../models/problem.js";
+// import  AdminMiddleware  from "../middleware/AdminMiddleware";
+import {createproblem} from "../Controllers/problems.js";
 
 const problemRouter=express.Router();
 
 // need admin permission:-
-problemRouter.post('/createProblem',Problemcreate);
-problemRouter.patch('/modify/:id',ProblemUpdate);
-problemRouter.delete('/remove/:id',deleteProblem);
+problemRouter.post('/createProblem',createproblem);
+// problemRouter.patch('/modify/:id',AdminMiddleware,ProblemUpdate);
+// problemRouter.delete('/remove/:id',AdminMiddleware,deleteProblem);
 // no need of admin permission:-
-problemRouter.get('/view/:id',getProblemById);
-problemRouter.get('/solvedproblem',getAllProblems);
-module.exports=problemRouter;
+// problemRouter.get('/view/:id',getProblemById);
+// problemRouter.get('/solvedproblem',getAllProblems);
+
+export default problemRouter;
