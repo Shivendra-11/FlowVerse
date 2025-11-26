@@ -1,79 +1,97 @@
-  export const getLanguageId = (language) => {
-    let languageId = {
-      "c++": 54,
-      java: 62,
-      python: 71,
-      javascript: 63,
-      c: 50,
-      perl: 82,
-    };
-    return languageId[language];
-  };
+import axios from "axios";
 
-  export const submitBatch = async (submissions) => {
-    const axios = require("axios");
 
-    const options = {
-      method: "GET",
-      url: "https://attm2x-m2x-v1.p.rapidapi.com/devices",
-      params: {
-        limit: "10",
-        sort: "created",
-        dir: "desc",
-      },
-      headers: {
-        "x-rapidapi-key": "ca31f4c020mshfad380e0449a47cp1787d9jsndafc0c7097d1",
-        "x-rapidapi-host": "attm2x-m2x-v1.p.rapidapi.com",
-      },
-    };
+export const getLanguageById = (lang)=>{
 
-    async function fetchData() {
-      try {
-        const response = await axios.request(options);
-        return response.data;
-      } catch (error) {
-        console.error(error);
-      }
+    const language = {
+        "c++":54,
+        "java":62,
+        "javascript":63
     }
 
-    return await fetchData();
-  };
 
- export const submitTokenres=async (submitToken)=>{
-    const axios = require('axios');
-
-  const options = {
-    method: 'GET',
-    url: 'https://judge0-extra-ce1.p.rapidapi.com/submissions/batch',
-    params: {
-      tokens: submitToken.join(','),
-      base64_encoded: 'true',
-      fields: '*'
-    },
-    headers: {
-      'x-rapidapi-key': 'ca31f4c020mshfad380e0449a47cp1787d9jsndafc0c7097d1',
-      'x-rapidapi-host': 'judge0-extra-ce1.p.rapidapi.com'
-    }
-  };
-
-  async function fetchData() {
-    try {
-      const response = await axios.request(options);
-      return response.data;
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  
-  while(true){
-    const result = await fetchData();
-    const IsresultObtained=result.every((res)=>res.status.id>2);
-    if(IsresultObtained){
-      return result;
-    }
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-  }
+    return language[lang.toLowerCase()];
 }
 
 
+export const submitBatch = async (submissions)=>{
+
+
+const options = {
+  method: 'POST',
+  url: 'https://judge0-ce.p.rapidapi.com/submissions/batch',
+  params: {
+    base64_encoded: 'false'
+  },
+  headers: {
+    'x-rapidapi-key': '2c2ddc8bb6msh969223d068fb563p194d7ajsnfc9294c73f6d',
+    'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+    'Content-Type': 'application/json'
+  },
+  data: {
+    submissions
+  }
+};
+
+async function fetchData() {
+	try {
+		const response = await axios.request(options);
+		return response.data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+ return await fetchData();
+
+}
+
+
+const waiting = async(timer)=>{
+  setTimeout(()=>{
+    return 1;
+  },timer);
+}
+
+// ["db54881d-bcf5-4c7b-a2e3-d33fe7e25de7","ecc52a9b-ea80-4a00-ad50-4ab6cc3bb2a1","1b35ec3b-5776-48ef-b646-d5522bdeb2cc"]
+
+export const submitToken = async(resultToken)=>{
+
+const options = {
+  method: 'GET',
+  url: 'https://judge0-ce.p.rapidapi.com/submissions/batch',
+  params: {
+    tokens: resultToken.join(","),
+    base64_encoded: 'false',
+    fields: '*'
+  },
+  headers: {
+    'x-rapidapi-key': '2c2ddc8bb6msh969223d068fb563p194d7ajsnfc9294c73f6d',
+    'x-rapidapi-host': 'judge0-ce.p.rapidapi.com'
+  }
+};
+
+async function fetchData() {
+	try {
+		const response = await axios.request(options);
+		return response.data;
+	} catch (error) {
+		console.error(error);
+	}
+}
+
+
+ while(true){
+
+ const result =  await fetchData();
+
+  const IsResultObtained =  result.submissions.every((r)=>r.status_id>2);
+
+  if(IsResultObtained)
+    return result.submissions;
+
+  
+  await waiting(1000);
+}
+
+}

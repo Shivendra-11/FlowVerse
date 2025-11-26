@@ -1,7 +1,7 @@
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import user from "../models/user.js";
-import validator from "../utils/validator.js";
+import  validator  from "../utils/validator.js";
 import redisClient from "../config/redis.js";
 import dotenv from "dotenv";
 dotenv.config();

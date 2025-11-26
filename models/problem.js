@@ -1,91 +1,88 @@
-const mongoose = require('mongoose');
+import mongoose from "mongoose";
+const Schema = mongoose.Schema;
 
-const problemSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true
+const problemSchema = new Schema({
+    title:{
+        type:String,
+        required:true
     },
-    description: {
-        type: String,
-        required: true
+    description:{
+        type:String,
+        required:true
     },
-    difficulty: {
-        type: String,
-        required: true,
-        enum: ["easy", "medium", "hard"]
+    difficulty:{
+        type:String,
+        enum:['easy','medium','hard'],
+        required:true,
     },
-    tags: {
-        type: String,
-        required: true,
-        enum: ["arrays", "strings", "math", "dynamic programming", "graphs", "trees", "sorting", "searching"]
+    tags:{
+        type:String,
+        enum:['array','linkedList','graph','dp'],
+        required:true
     },
+    visibleTestCases:[
+        {
+            input:{
+                type:String,
+                required:true,
+            },
+            output:{
+                type:String,
+                required:true,
+            },
+            explanation:{
+                type:String,
+                required:true
+            }
+        }
+    ],
 
-    starterCode: [
+    hiddenTestCases:[
         {
-            language: {
-                type: String,
-                required: true,
-                enum: ['java', 'c++', 'javascript', 'python', 'perl', 'c']
+            input:{
+                type:String,
+                required:true,
             },
-            InitialCode: {
-                type: String,
-                required: true,
-                default: "//write your code here"
+            output:{
+                type:String,
+                required:true,
             }
         }
     ],
-    referenceCode:[
-        {
-            language: {
-                type: String,
-                required: true,
-                enum: ['java', 'c++', 'javascript', 'python', 'perl', 'c']
-            },
-            CompleteCode: {
-                type: String,
-                required: true,
-                default: "//write your code here"
-            }
-        }
-    ],
-    visibleTestCases: [
-        {
-            input: {
-                type: String,
-                required: true
-            },
-            output: {
-                type: String,
-                required: true
-            },
-            explanation: {
-                type: String,
-                required: true
-            }
-        }
-    ],
-    hiddenTestCases: [
-        {
-            input: {
-                type: String,
-                required: true
-            },
-            output: {
-                type: String,
-                required: true
-            }
-        }
-    ],
-    problemCreator: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-        required: true
-    },
 
-    createdAt: {
-        type: Date,
-        default: Date.now
+    startCode: [
+        {
+            language:{
+                type:String,
+                required:true,
+            },
+            initialCode:{
+                type:String,
+                required:true
+            }
+        }
+    ],
+
+    referenceSolution:[
+        {
+            language:{
+                type:String,
+                required:true,
+            },
+            completeCode:{
+                type:String,
+                required:true
+            }
+        }
+    ],
+
+    problemCreator:{
+        type: Schema.Types.ObjectId,
+        ref:'user',
+        required:true
     }
-});
+})
 
-module.exports = mongoose.model("Problem", problemSchema);
+
+export default mongoose.model('Problem',problemSchema);
+
