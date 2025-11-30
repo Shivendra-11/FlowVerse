@@ -21,7 +21,7 @@ export const submissioncode = async (req, res) => {
     const problem = await Problem.findById({ problemId });
     if (!problem) {
       return res.status(404).send({
-        message: "Problem not found",
+        message: "Problem not found for this id",
       });
     }
 
