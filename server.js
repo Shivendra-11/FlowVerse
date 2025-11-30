@@ -5,9 +5,11 @@ import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/userAuth.js"
 import redisClient from "./config/redis.js";
-import problemRouter from "./routes/problemRouter.js";
 
 dotenv.config();
+
+import problemRouter from "./routes/problemRouter.js";
+
 connectDB();
 
 const app = express();
@@ -42,8 +44,8 @@ function startServer() {
 async function InitializeConnection() {
   try {
     await Promise.all([
-      redisClient.connect(), // Redis connect
-      startServer()          // Server start
+      redisClient.connect(), 
+      startServer()          
     ]);
 
     console.log("Redis + Server initialized successfully");

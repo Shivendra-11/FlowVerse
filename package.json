@@ -1,21 +1,24 @@
 {
   "name": "flowverse",
   "version": "1.0.0",
-  "type": "module",
+  "description": "FlowVerse server application",
   "main": "server.js",
+  "type": "module",
   "scripts": {
+    "start": "node server.js",
     "dev": "nodemon server.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "axios": "^1.13.2",
     "bcrypt": "^6.0.0",
     "cookie-parser": "^1.4.7",
     "cookies": "^0.9.1",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.19.3",
     "moongoose": "^0.0.5",
