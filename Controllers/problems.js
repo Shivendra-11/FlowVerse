@@ -8,7 +8,7 @@ import Problem from "../models/problem.js";
 export const createProblem = async (req, res) => {
   try {
     const {
-      title,
+     title,
       description,
       difficulty,
       tags,
