@@ -5,8 +5,8 @@ import  validator  from "../utils/validator.js";
 import redisClient from "../config/redis.js";
 import dotenv from "dotenv";  
 
-const JWT_SECRET = process.env.JWT;
-
+dotenv.config();
+const JWT_SECRET = process.env.JWT ;
 export const register = async (req, res) => {
   try {
     validator(req.body);

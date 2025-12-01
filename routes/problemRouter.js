@@ -1,7 +1,6 @@
 import express from "express";
 import  AdminMiddleware  from "../middleware/AdminMiddleware.js";
 import {createProblem, deleteProblem, getAllProblems, getProblemById, ProblemUpdate,} from "../Controllers/problems.js";
-
 const problemRouter=express.Router();
 
 // need admin permission:-

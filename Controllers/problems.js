@@ -33,9 +33,7 @@ export const createProblem = async (req, res) => {
         });
       }
 
-      // ---------------------------------------------
-      // SUBMISSION CREATION
-      // ---------------------------------------------
+
       const submissions = visibleTestCases.map((testcase, index) => {
         return {
           source_code: completeCode,
@@ -47,10 +45,7 @@ export const createProblem = async (req, res) => {
 
       console.log("🔥 SUBMISSIONS SENT TO JUDGE0:");
       console.log(JSON.stringify(submissions, null, 2));
-
-      // ---------------------------------------------
-      // SUBMIT BATCH TO JUDGE0
-      // ---------------------------------------------
+      
       const submitResult = await submitBatch(submissions);
 
       console.log("🔥 TOKENS RECEIVED FROM JUDGE0:");

@@ -36,8 +36,10 @@ const UserSchema=new mongoose.Schema({
          default:'user'
     },
     problemSolved:{
-        type:[String],
-        default:[]
+        type:[{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Problem'
+        }]
     }
 },
 {

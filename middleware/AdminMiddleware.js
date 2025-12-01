@@ -1,6 +1,9 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.js";
 import redisClient from "../config/redis.js";
+import dotenv from "dotenv";
+dotenv.config();
+const JWT=process.env.JWT;
 
 const AdminMiddleware = async (req, res, next) => {
   try {
@@ -17,7 +20,7 @@ const AdminMiddleware = async (req, res, next) => {
     }
 
     // Decode token
-    const payload = jwt.verify(token, process.env.JWT);
+    const payload = jwt.verify(token, JWT);
     const { id } = payload;
 
     if (!id) {

@@ -4,6 +4,7 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import connectDB from "./config/mongodb.js";
 import authRouter from "./routes/userAuth.js"
+import Submissionrouter from "./routes/submissioin.js";
 import redisClient from "./config/redis.js";
 
 dotenv.config();
@@ -26,6 +27,7 @@ app.get("/", (req, res) => {
 // Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/problem", problemRouter);
+app.use("/api/v1/submission", Submissionrouter);
 
 const PORT = process.env.PORT || 5000;
   
