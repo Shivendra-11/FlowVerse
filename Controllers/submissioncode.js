@@ -1,7 +1,11 @@
 import Problem from "../models/problem.js";
-import { getLanguageById, submitBatch, submitToken } from "../utils/LanguagaeId.js";
+import user from "../models/user.js";
+import {
+  getLanguageById,
+  submitBatch,
+  submitToken,
+} from "../utils/LanguagaeId.js";
 import submissioncode from "../models/submission.js";
-
 
 export const submitCode = async (req, res) => {
   try {
@@ -24,7 +28,7 @@ export const submitCode = async (req, res) => {
       });
     }
 
-   const submission = await submissioncode.create({
+    const submission = await submissioncode.create({
       userId,
       problemId,
       code,
@@ -39,8 +43,8 @@ export const submitCode = async (req, res) => {
         error: `Unsupported language '${language}'`,
       });
     }
-         
-    const submissions = problem.visibleTestCases.map((testcase, index) => {
+
+    const submissions = problem.hiddenTestCases.map((testcase, index) => {
       return {
         source_code: code,
         language_id: languageId,
@@ -48,7 +52,7 @@ export const submitCode = async (req, res) => {
         expected_output: testcase.output,
       };
     });
-    
+
     const submitResult = await submitBatch(submissions);
     if (!submitResult) {
       return res.status(500).json({ error: "Judge0 did not return tokens" });
@@ -57,7 +61,6 @@ export const submitCode = async (req, res) => {
     const resultToken = submitResult.map((value) => value.token);
 
     const testResults = await submitToken(resultToken);
-    // console.log("testresult is"+JSON.stringify(testResults));
 
     let testcasepassed = 0;
     let status = "pending";
@@ -75,36 +78,38 @@ export const submitCode = async (req, res) => {
         if (test.status.id === 4) {
           status = "failed";
           errormessage = test.stderr;
-        }else if(test.status.id === 5){
+        } else if (test.status.id === 5) {
           status = "rejected";
           errormessage = test.compile_output;
-        }
-        else if(test.status.id ===6){
+        } else if (test.status.id === 6) {
           status = "rejected";
           errormessage = test.message;
         } else {
           status = "rejected";
-          errormessage = test.status.description;  
-        } 
+          errormessage = test.status.description;
+        }
       }
     }
-    // console.log("testcasepassed",testcasepassed); 
+    // console.log("testcasepassed",testcasepassed);
     if (testcasepassed === testResults.length && testResults.length > 0) {
-  status = "accepted";
-} else {
-  status = "rejected";
-}
+      status = "accepted";
+    } else {
+      status = "rejected";
+    }
 
     submission.status = status;
     submission.runtime = runtime;
     submission.memory = memory;
     submission.errorMessage = errormessage;
     submission.testCasesPassed = testcasepassed;
-    submission.totalTestCases = problem.visibleTestCases.length;
+    submission.totalTestCases = problem.hiddenTestCases.length;
 
     await submission.save();
 
-    if(testcasepassed === problem.visibleTestCases.length && !req.user.problemSolved.includes(problemId)){
+    if (
+      testcasepassed === problem.hiddenTestCases.length &&
+      !req.user.problemSolved.includes(problemId)
+    ) {
       req.user.problemSolved.push(problemId);
       await req.user.save();
     }
@@ -112,7 +117,7 @@ export const submitCode = async (req, res) => {
     return res.status(200).send({
       message: "Code submitted successfully",
       submission,
-    }); 
+    });
 
     console.log("🔥 TEST RESULTS RECEIVED FROM JUDGE0:", testResults);
   } catch (err) {
@@ -123,12 +128,80 @@ export const submitCode = async (req, res) => {
   }
 };
 
-export const getallproblemsolved=async(req,res)=>{
-  try{
-       const userid=req.user._id;
-        const problemcount=req.user.problemSolved.length;
-        return res.status(200).json({message:"All problems solved fetched successfully",data:problemcount});
-  }catch(error){
-    return res.status(500).json({message:error.message}); 
+export const getallproblemsolved = async (req, res) => {
+  try {
+    const userid = req.user._id;
+    const userproblem = await user.findById(userid).populate({
+      path: "problemSolved",
+      select: " _id title difficulty",
+    });
+    return res
+      .status(200)
+      .json({
+        message: "All problems solved fetched successfully",
+        data: userproblem.problemSolved,
+      });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
-}
+};
+
+export const runcode = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const problemId = req.params.id;
+    console.log("🔥 CODE SUBMISSION:", { userId, problemId });
+
+    const { code, language } = req.body;
+    if (!userId || !problemId || !code || !language) {
+      return res.status(400).send({
+        message: "Please provide all the field",
+      });
+    }
+
+    const problem = await Problem.findById(problemId);
+
+    if (!problem) {
+      return res.status(404).send({
+        message: "Problem not found for this id",
+      });
+    }
+
+    const languageId = getLanguageById(language);
+
+    if (!languageId) {
+      return res.status(400).json({
+        error: `Unsupported language '${language}'`,
+      });
+    }
+
+    const submissions = problem.visibleTestCases.map((testcase, index) => {
+      return {
+        source_code: code,
+        language_id: languageId,
+        stdin: testcase.input,
+        expected_output: testcase.output,
+      };
+    });
+
+    const submitResult = await submitBatch(submissions);
+    if (!submitResult) {
+      return res.status(500).json({ error: "Judge0 did not return tokens" });
+    }
+
+    const resultToken = submitResult.map((value) => value.token);
+
+    const testResults = await submitToken(resultToken);
+
+    return res.status(200).send({
+      message: "Code run successfully",
+      testResults
+    });
+
+    console.log("🔥 TEST RESULTS RECEIVED FROM JUDGE0:", testResults);
+  } catch (error) {
+    return res.status(500).json({
+      message: error.message,
+    });
+  }
+};
