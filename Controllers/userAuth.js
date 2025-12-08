@@ -9,6 +9,7 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT ;
 export const register = async (req, res) => {
   try {
+
     validator(req.body);
 
     const { firstName, lastName, emailId, password } = req.body;
@@ -36,9 +37,7 @@ export const register = async (req, res) => {
       sameSite: "strict",
     });
 
-    return res
-      .status(201)
-      .json({ message: "User registered successfully", token });
+   return res.status(201).json({ message: "User registered successfully", token , user: newUser });
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
