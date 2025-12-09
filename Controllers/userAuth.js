@@ -78,7 +78,7 @@ export const login = async (req, res) => {
       sameSite: "strict",
     });
 
-    return res.status(200).json({ message: "Login successful", token });
+    return res.status(200).json({ message: "Login successful", token, user: existingUser });
 
   } catch (error) {
     return res.status(500).json({ message: error.message });
