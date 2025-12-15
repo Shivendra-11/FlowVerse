@@ -332,7 +332,7 @@ export const getAllProblems = async (req, res) => {
       .select('title description difficulty tags')
       .skip(skip)
       .limit(limit)
-      .sort({ createdAt: -1 }); // Newest first
+      .sort({ createdAt: -1 }); 
 
     const total = await Problem.countDocuments();
 

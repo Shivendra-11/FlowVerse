@@ -11,13 +11,16 @@ export const submitCode = async (req, res) => {
   try {
     const userId = req.user._id;
     const problemId = req.params.id;
-    console.log("🔥 CODE SUBMISSION:", { userId, problemId });
+    // console.log("🔥 CODE SUBMISSION:", { userId, problemId });
 
-    const { code, language } = req.body;
+   let { code, language } = req.body;
     if (!userId || !problemId || !code || !language) {
       return res.status(400).send({
         message: "Please provide all the field",
       });
+    }
+    if(language==="cpp"){
+      language="c++"; 
     }
 
     const problem = await Problem.findById(problemId);
@@ -150,12 +153,14 @@ export const runcode = async (req, res) => {
   try {
     const userId = req.user._id;
     const problemId = req.params.id;
+
     console.log("🔥 CODE SUBMISSION:", { userId, problemId });
 
-    const { code, language } = req.body;
+    let { code, language } = req.body;  
+
     if (!userId || !problemId || !code || !language) {
       return res.status(400).send({
-        message: "Please provide all the field",
+        message: "Please provide all the fields",
       });
     }
 
@@ -167,6 +172,11 @@ export const runcode = async (req, res) => {
       });
     }
 
+    
+    if (language === "cpp") {
+      language = "c++";
+    }
+
     const languageId = getLanguageById(language);
 
     if (!languageId) {
@@ -175,7 +185,7 @@ export const runcode = async (req, res) => {
       });
     }
 
-    const submissions = problem.visibleTestCases.map((testcase, index) => {
+    const submissions = problem.visibleTestCases.map((testcase) => {
       return {
         source_code: code,
         language_id: languageId,
@@ -185,6 +195,7 @@ export const runcode = async (req, res) => {
     });
 
     const submitResult = await submitBatch(submissions);
+
     if (!submitResult) {
       return res.status(500).json({ error: "Judge0 did not return tokens" });
     }
@@ -198,13 +209,13 @@ export const runcode = async (req, res) => {
       testResults
     });
 
-    console.log("🔥 TEST RESULTS RECEIVED FROM JUDGE0:", testResults);
   } catch (error) {
     return res.status(500).json({
       message: error.message,
     });
   }
 };
+
 
 export const DeleteuserProfile=async (req,res)=>{
   try{

@@ -8,6 +8,5 @@ Submissionrouter.post('/submit/:id', userAuthmiddleware, submitCode);
 Submissionrouter.get('/getallproblemsolved',userAuthmiddleware, getallproblemsolved);
 Submissionrouter.post('/runcode/:id', userAuthmiddleware, runcode);
 Submissionrouter.delete('/deleteuserprofile/', userAuthmiddleware, DeleteuserProfile);
-Submissionrouter.post("/submittedproblem/:pid",userAuthmiddleware,submittedproblem);
+Submissionrouter.get("/submittedproblem/:pid",userAuthmiddleware,submittedproblem);
 export default Submissionrouter;
-
