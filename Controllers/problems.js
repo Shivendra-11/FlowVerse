@@ -4,6 +4,7 @@ import {
   submitToken,
 } from "../utils/LanguagaeId.js";
 import Problem from "../models/problem.js";
+import solutionVideo from "../models/solutionVideo.js";
 
 export const createProblem = async (req, res) => {
   try {
@@ -304,6 +305,21 @@ export const getProblemById = async (req, res) => {
         return res.status(404).json({
           success:false,
           message:"Problem not found"
+        });
+      }  
+
+      const solutionvideo=await solutionVideo.findOne({problemId:id});
+
+      if(solutionvideo){
+        problem.cloudinaryPublicId=solutionvideo.cloudinaryPublicId;
+        problem.secureUrl=solutionvideo.secureUrl;
+        problem.thumbnailUrl=solutionvideo.thumbnailUrl;
+        problem.duration=solutionvideo.duration;
+
+        return res.status(200).json({
+        success:true,
+        data:problem
+        
         });
       }
 

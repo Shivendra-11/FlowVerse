@@ -8,6 +8,7 @@ import Submissionrouter from "./routes/submissioin.js";
 import redisClient from "./config/redis.js";
 import FlowAirouter from "./routes/FlowAi.js";
 import problemRouter from "./routes/problemRouter.js";
+import videoRouter from "./routes/videoCreator.js"; 
 
 dotenv.config();
 connectDB();
@@ -42,6 +43,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/problem", problemRouter);
 app.use("/api/v1/submission", Submissionrouter);
 app.use("/api/v1/flowai", FlowAirouter);
+app.use("/api/v1/video", videoRouter);
 
 const PORT = process.env.PORT;
 
