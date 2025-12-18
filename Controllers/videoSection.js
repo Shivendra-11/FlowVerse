@@ -97,7 +97,7 @@ export const saveVideoMetadata = async (req, res) => {
     });
 
     // Create video solution record
-    const videoSolution = new SolutionVideo({
+    const videoSolution = await SolutionVideo.create({
       problemId,
       userId,
       cloudinaryPublicId,
@@ -106,7 +106,7 @@ export const saveVideoMetadata = async (req, res) => {
       thumbnailUrl
     });
 
-    await SolutionVideo.save();
+  
 
 
     res.status(201).json({
@@ -128,10 +128,10 @@ export const saveVideoMetadata = async (req, res) => {
 
 export const deleteVideo = async (req, res) => {
   try {
-    const { videoId } = req.params;
-    const userId = req.result._id;
+    const { problemId } = req.params;
+    const userId = req.user._id;
 
-    const video = await SolutionVideo.findByIdAndDelete(videoId);
+    const video = await SolutionVideo.findOneAndDelete({ problemId:{$eq:problemId} });
     
     if (!video) {
       return res.status(404).json({ error: 'Video not found' });

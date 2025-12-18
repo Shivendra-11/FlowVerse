@@ -5,6 +5,6 @@ import {generateUploadSignature, saveVideoMetadata, deleteVideo} from "../Contro
 
 videoRouter.get("/create/:problemId",adminMiddleware,generateUploadSignature);
 videoRouter.post("/save",adminMiddleware,saveVideoMetadata);
-videoRouter.delete("/delete/:videoId",adminMiddleware,deleteVideo);
+videoRouter.delete("/delete/:problemId",adminMiddleware,deleteVideo);
 
 export default videoRouter;
