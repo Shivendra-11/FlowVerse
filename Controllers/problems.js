@@ -310,16 +310,17 @@ export const getProblemById = async (req, res) => {
 
       const solutionvideo=await solutionVideo.findOne({problemId:id});
 
-      if(solutionvideo){
-        problem.cloudinaryPublicId=solutionvideo.cloudinaryPublicId;
-        problem.secureUrl=solutionvideo.secureUrl;
-        problem.thumbnailUrl=solutionvideo.thumbnailUrl;
-        problem.duration=solutionvideo.duration;
+          if(solutionvideo){
+            const response ={
+              ...problem.toObject(),
+              secureUrl:solutionvideo.secureUrl,
+              thumbnailUrl:solutionvideo.thumbnailUrl,
+              duration:solutionvideo.duration
+            }
 
         return res.status(200).json({
         success:true,
-        data:problem
-        
+        data:response
         });
       }
 
@@ -336,7 +337,7 @@ export const getProblemById = async (req, res) => {
       error: err.message,
     });
   }
-}
+};
 
 export const getAllProblems = async (req, res) => {
   try {
